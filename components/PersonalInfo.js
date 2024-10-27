@@ -1,42 +1,76 @@
 import { Text, SafeAreaView, TextInput, StyleSheet, View, Button, TouchableOpacity } from 'react-native';
 import DatePicker from '../components/DatePicker.js';
-import {useState} from 'react';
+import { useState } from 'react';
+
+export default function PersonalInfo({ screenstyle, data, setData }) {
+  const [showDTP, setShowDTP] = useState(false);
 
 
-export default function PersonalInfo({screenstyle}) {
-
-  const [dob, setDob] = useState(new Date("2000-01-01"));
- 
-  const [showDTP,setShowDTP] = useState(false);
-  function showDatePicker(){
+  function showDatePicker() {
     setShowDTP(true);
   }
-  function hideDatePicker(value){
-    setDob(value);
+
+  
+  function hideDatePicker(value) {
+    setData(prevData => ({
+      ...prevData,
+      bookDate: value.toISOString().split('T')[0]  
+    }));
     setShowDTP(false);
   }
+
+  
+  function handleFirstNameChange(text) {
+    setData(prevData => ({
+      ...prevData,
+      firstName: text,
+    }));
+  }
+
+  function handleLastNameChange(text) {
+    setData(prevData => ({
+      ...prevData,
+      lastName: text,
+    }));
+  }
+
   return (
     <View style={screenstyle}>
       <View style={styles.label}><Text style={styles.label}>Firstname</Text></View>
-      <TextInput style={styles.textbox} placeholder="Enter your first name"/>
+      <TextInput
+        style={styles.textbox}
+        placeholder="Enter your first name"
+        value={data.firstName || ""}
+        onChangeText={handleFirstNameChange}
+      />
       <Text style={styles.label}>Lastname</Text>
-      <TextInput style={styles.textbox} placeholder="Enter your last name"/>  
-      <DatePicker thisDate={dob} setThisdate={setDob} datelabel="Date of Birth" />
+      <TextInput
+        style={styles.textbox}
+        placeholder="Enter your last name"
+        value={data.lastName || ""}
+        onChangeText={handleLastNameChange}
+      />
+      <DatePicker
+        thisDate={new Date(data.bookDate)}
+        setThisdate={hideDatePicker}
+        datelabel="Date of Birth"
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({ 
+const styles = StyleSheet.create({
   label: {
-    flexDirection:"row",
+    flexDirection: "row",
     fontSize: 24,
     fontWeight: "bold",
   },
-  textbox:  {
+  textbox: {
     flexDirection: "row",
     borderRadius: 5,
     padding: 7,
-    border: "1px solid black",
+    borderColor: "black",
+    borderWidth: 1,
     width: "100%",
     fontSize: 24,
     marginBottom: 14,
@@ -52,7 +86,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 2,
     backgroundColor: '#0569FF',
-    borderColor: '#0569FF'
+    borderColor: '#0569FF',
   }
-  
 });
